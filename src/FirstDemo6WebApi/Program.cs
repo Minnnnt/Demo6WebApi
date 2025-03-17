@@ -13,6 +13,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
 using FirstDemo6Domain;
+using FirstDemo6WebCore.Helper;
+using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -173,6 +175,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddAuthorization();
 // 添加控制器服务，支持 MVC 控制器
 builder.Services.AddControllers();
+builder.Services.AddSingleton(new JwtHelper(builder.Configuration));
 #endregion
 
 #region 过滤器注入

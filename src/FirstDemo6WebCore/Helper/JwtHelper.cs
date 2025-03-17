@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 
 namespace FirstDemo6WebCore.Helper
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class JwtHelper
     {
         private readonly IConfiguration _configuration;

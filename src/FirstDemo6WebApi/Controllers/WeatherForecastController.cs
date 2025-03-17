@@ -1,6 +1,7 @@
 using FirstDemo6WebApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using FirstDemo6Common.Enums;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FirstDemo6WebApi.Controllers
 {
@@ -32,6 +33,7 @@ namespace FirstDemo6WebApi.Controllers
         /// 
         /// </summary>
         /// <returns></returns>
+        [Authorize]
         [HttpGet(Name = "GetWeatherForecast")]
         public IEnumerable<WeatherForecast> Get()
         {
