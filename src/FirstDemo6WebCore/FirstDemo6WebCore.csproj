@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\FirstDemo6Common\FirstDemo6Common.csproj" />
+		<ProjectReference Include="..\FirstDemo6DependencyPackage\FirstDemo6DependencyPackage.csproj" />
+	</ItemGroup>
+
+</Project>
