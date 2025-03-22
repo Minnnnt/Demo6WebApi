@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace FirstDemo6WebApi.Controllers
 {
     /// <summary>
-    /// 测试swagger注释显示
+    /// 
     /// ApiExplorerSettings，swagger版本控制特性
     /// </summary>
     [ApiController]

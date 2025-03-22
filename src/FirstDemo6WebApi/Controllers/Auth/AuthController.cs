@@ -1,5 +1,8 @@
 ﻿using FirstDemo6Application.Dtos.InputDtos;
 using FirstDemo6Common.Enums;
+using FirstDemo6WebApi.Models;
+using FirstDemo6WebCore.Helper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -20,16 +23,18 @@ namespace FirstDemo6WebApi.Controllers.Auth
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IConfiguration _configuration;
+        private readonly JwtHelper _jwtHelper;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="userManager"></param>
         /// <param name="configuration"></param>
-        public AuthController(UserManager<IdentityUser> userManager, IConfiguration configuration)
+        public AuthController(UserManager<IdentityUser> userManager, IConfiguration configuration, JwtHelper jwtHelper)
         {
             _userManager = userManager;
             _configuration = configuration;
+            _jwtHelper = jwtHelper;
         }
 
         /// <summary>
@@ -37,8 +42,8 @@ namespace FirstDemo6WebApi.Controllers.Auth
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterInputDto model)
+        [HttpPost("generalUser/create")]
+        public async Task<IActionResult> CreateGeneralUser([FromBody] CreateGeneralUserInputDto model)
         {
             var user = new IdentityUser { UserName = model.Username, Email = model.Email };
             var result = await _userManager.CreateAsync(user, model.Password);
@@ -57,13 +62,13 @@ namespace FirstDemo6WebApi.Controllers.Auth
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        [HttpPost("administrator/add")]
-        public async Task<IActionResult> AddAdministrator([FromBody] CreateAdministratorInputDto model)
+        [HttpPost("facultyUser/create")]
+        public async Task<IActionResult> CreateFacultyUser([FromBody] CreateFacultyUserInputDto model)
         {
             try
             {
-                var user = new IdentityUser { UserName = model.AdminName };
-                var result = await _userManager.CreateAsync(user, model.AdminPass);
+                var user = new IdentityUser { UserName = model.Username };
+                var result = await _userManager.CreateAsync(user, model.Password);
 
                 if (result.Succeeded)
                 {
@@ -89,28 +94,10 @@ namespace FirstDemo6WebApi.Controllers.Auth
             var user = await _userManager.FindByNameAsync(model.Username);
             if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
             {
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var jwtSettings = _configuration.GetSection("JwtSettings");
-                var key = Encoding.ASCII.GetBytes(jwtSettings["SecretKey"]);
-                var tokenDescriptor = new SecurityTokenDescriptor
-                {
-                    Subject = new ClaimsIdentity(new Claim[]
-                    {
-                        new Claim(ClaimTypes.Name, user.UserName)
-                    }),
-                    Issuer = jwtSettings["Issuer"],
-                    Audience = jwtSettings["Audience"],
-                    Expires = DateTime.UtcNow.AddHours(1),
-                    SigningCredentials = new SigningCredentials(
-                        new SymmetricSecurityKey(key),
-                        SecurityAlgorithms.HmacSha256Signature)
-                };
-                var token = tokenHandler.CreateToken(tokenDescriptor);
-                var tokenString = tokenHandler.WriteToken(token);
+                string tokenString = _jwtHelper.CreateToken(model.Username, null);
 
                 return Ok(new { Token = tokenString });
             }
-
             return Unauthorized();
         }
     }

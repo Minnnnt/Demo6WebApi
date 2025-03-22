@@ -124,29 +124,46 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>()
 #endregion
 
 #region JWT 配置
+// 从配置文件中获取 JWT 设置
+var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 // 添加 JWT 身份验证服务
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        // 配置令牌验证参数
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            // 是否验证令牌的签发者
-            ValidateIssuer = true,
-            // 是否验证令牌的接收者
-            ValidateAudience = true,
-            // 是否验证令牌的有效期
-            ValidateLifetime = true,
-            // 是否验证令牌的签名密钥
-            ValidateIssuerSigningKey = true,
-            // 有效的签发者，从配置文件中读取
-            ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
-            // 有效的接收者，从配置文件中读取
-            ValidAudience = builder.Configuration["JwtSettings:Audience"],
-            // 签发者的签名密钥，从配置文件中读取密钥并转换为字节数组，用于创建对称安全密钥
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:SecretKey"]))
-        };
-    });
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+  {
+      //options.TokenValidationParameters = new TokenValidationParameters
+      //{
+      //    ValidateIssuer = true,
+      //    ValidateAudience = true,
+      //    ValidateLifetime = true,
+      //    ValidateIssuerSigningKey = true,
+      //    ValidIssuer = jwtSettings["Issuer"],
+      //    ValidAudience = jwtSettings["Audience"],
+      //    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["SecretKey"])),
+      //    ClockSkew = TimeSpan.Zero  // 默认的 5 分钟偏移时间
+      //};
+      // 配置令牌验证参数
+      options.TokenValidationParameters = new TokenValidationParameters
+      {
+          // 是否验证令牌的签发者
+          ValidateIssuer = true,
+          // 是否验证令牌的接收者
+          ValidateAudience = true,
+          // 是否验证令牌的有效期
+          ValidateLifetime = true,
+          // 是否验证令牌的签名密钥
+          ValidateIssuerSigningKey = true,
+          // 有效的签发者，从配置文件中读取
+          ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
+          // 有效的接收者，从配置文件中读取
+          ValidAudience = builder.Configuration["JwtSettings:Audience"],
+          // 签发者的签名密钥，从配置文件中读取密钥并转换为字节数组，用于创建对称安全密钥
+          IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:SecretKey"])),
+          ClockSkew = TimeSpan.Zero
+      };
+  });
 #region
 // 配置 JWT 认证另一种写法
 //var jwtSettings = builder.Configuration.GetSection("JwtSettings");
@@ -173,8 +190,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 #endregion
 // 添加授权服务，以便后续可以使用 [Authorize] 特性来保护路由
 builder.Services.AddAuthorization();
-// 添加控制器服务，支持 MVC 控制器
-builder.Services.AddControllers();
 builder.Services.AddSingleton(new JwtHelper(builder.Configuration));
 #endregion
 
@@ -212,12 +227,12 @@ if (app.Environment.IsDevelopment())
     #endregion
     app.UseSwaggerExt();
 }
-
+app.UseRouting();
 app.UseHttpsRedirection();
-// 使用授权中间件
-app.UseAuthorization();
 // 使用身份验证中间件
 app.UseAuthentication();
+// 使用授权中间件
+app.UseAuthorization();
 
 app.MapControllers();
 

@@ -11,4 +11,8 @@
     <Folder Include="Interfaces\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\FirstDemo6Common\FirstDemo6Common.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -2,6 +2,7 @@ using FirstDemo6WebApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using FirstDemo6Common.Enums;
 using Microsoft.AspNetCore.Authorization;
+using static FirstDemo6Common.Enums.UserEnum;
 
 namespace FirstDemo6WebApi.Controllers
 {
@@ -9,8 +10,9 @@ namespace FirstDemo6WebApi.Controllers
     /// 
     /// </summary>
     [ApiController]
-    [Route("[controller]")]
-    [ApiExplorerSettings(IgnoreApi =false,GroupName = nameof(APIVersions.v2))]
+    [Route("api/[controller]")]
+    [Authorize]
+    [ApiExplorerSettings(IgnoreApi =false,GroupName = nameof(APIVersions.v1))]
     public class WeatherForecastController : ControllerBase
     {
         private static readonly string[] Summaries = new[]
@@ -34,8 +36,8 @@ namespace FirstDemo6WebApi.Controllers
         /// </summary>
         /// <returns></returns>
         [Authorize]
-        [HttpGet(Name = "GetWeatherForecast")]
-        public IEnumerable<WeatherForecast> Get()
+        [HttpGet("query")]
+        public IEnumerable<WeatherForecast> GetWeatherForecast()
         {
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
