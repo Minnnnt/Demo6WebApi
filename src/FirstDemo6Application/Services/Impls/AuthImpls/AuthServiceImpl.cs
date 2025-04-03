@@ -33,7 +33,7 @@ namespace FirstDemo6Application.Services.Impls.AuthImpls
             {
                 string tokenString = _jwtHelper.CreateToken(model.Username, null);
                 return tokenString;
-            }
+            } 
             throw new BusinessFriendException(ExceptionEnums.BusinessErrorCode.Param_Is_Null,"");
         }
     }

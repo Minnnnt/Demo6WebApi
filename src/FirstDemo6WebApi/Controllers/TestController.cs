@@ -1,4 +1,9 @@
 using FirstDemo6Common.Enums;
+using FirstDemo6Models.Bos.MediatRBos;
+using FirstDemo6WebCore.MediatRs.Commands;
+using FirstDemo6WebCore.MediatRs.Events;
+using FirstDemo6WebCore.MediatRs.Requests;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FirstDemo6WebApi.Controllers
@@ -16,16 +21,40 @@ namespace FirstDemo6WebApi.Controllers
         /// 
         /// </summary>
         public readonly ILogger<TestController> _Logger;
+        private readonly IMediator _mediator;
 
         /// <summary>
         /// 构造注入
         /// </summary>
-        /// <param name="logger"></param>
-        public TestController(ILogger<TestController> logger)
+        public TestController(ILogger<TestController> logger, IMediator mediator)
         {
             _Logger = logger;
+            _mediator = mediator;
         }
 
+        #region MediatR适用测试demo
+        [HttpGet("mediatRdemo/{id}")]
+        public async Task<IActionResult> GetProduct(int id)
+        {
+            var request = new DemoRequest { DemoId = id };
+            var product = await _mediator.Send(request);
+            return Ok(product);
+        }
+
+        [HttpPost("mediatRdemo")]
+        public async Task<IActionResult> CreateProduct([FromBody] DemoCommand command)
+        {
+            var newProductId = await _mediator.Send(command);
+
+            // 发布事件
+            var @event = new DemoEvent { DemoId = newProductId, Name = command.Name };
+            await _mediator.Publish(@event);
+
+            return CreatedAtAction(nameof(GetProduct), new { id = newProductId }, new { Id = newProductId, Name = command.Name });
+        }
+        #endregion
+
+        #region swageer测试及日志记录测试
         /// <summary>
         /// 测试swagger注释显示get
         /// </summary>
@@ -53,5 +82,6 @@ namespace FirstDemo6WebApi.Controllers
             _Logger.LogError("this is lognet error");
             return Ok();
         }
+        #endregion
     }
 }

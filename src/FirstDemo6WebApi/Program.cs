@@ -1,10 +1,4 @@
-using Microsoft.Extensions.Options;
-using Microsoft.OpenApi.Models;
-using System;
-using static System.Net.WebRequestMethods;
-using System.Security.Cryptography.Xml;
 using FirstDemo6WebCore.SwaggerExtend;
-using System.Configuration;
 using FirstDemo6WebCore.CorsExtend;
 using Microsoft.EntityFrameworkCore;
 using FirstDemo6WebCore.Filters;
@@ -14,11 +8,13 @@ using System.Text;
 using Microsoft.AspNetCore.Identity;
 using FirstDemo6Domain;
 using FirstDemo6WebCore.Helper;
-using Microsoft.Extensions.Configuration;
 using FirstDemo6WebCore.Middlewares;
 using Hangfire.MySql;
 using Hangfire;
-using FirstDemo6Application.Hangfires;
+using System.Reflection;
+using FirstDemo6WebCore.Hangfires;
+using Microsoft.Extensions.DependencyInjection;
+using System.Reflection.Emit;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -230,6 +226,18 @@ builder.Services.AddHangfireServer();
 // 注册 HangfireJobService
 builder.Services.AddHostedService<TeachingWorkloadStatisticsHangfireJobService>();
 #endregion
+
+#region 添加MediatR服务
+// 注册 MediatR 并指定要扫描的程序集，扫描了所有程序集都注册了MediatR 服务
+var refAssembyNames = Assembly.GetExecutingAssembly().GetReferencedAssemblies();
+foreach (var asslembyNames in refAssembyNames)
+{
+    Assembly.Load(asslembyNames);
+}
+var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+builder.Services.AddMediatR(cfg=>cfg.RegisterServicesFromAssemblies(assemblies));
+#endregion
+
 
 var app = builder.Build();
 

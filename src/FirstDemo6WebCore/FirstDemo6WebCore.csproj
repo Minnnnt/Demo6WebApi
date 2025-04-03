@@ -9,6 +9,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\FirstDemo6Common\FirstDemo6Common.csproj" />
 		<ProjectReference Include="..\FirstDemo6DependencyPackage\FirstDemo6DependencyPackage.csproj" />
+		<ProjectReference Include="..\FirstDemo6Models\FirstDemo6Models.csproj" />
 	</ItemGroup>
 
 </Project>
