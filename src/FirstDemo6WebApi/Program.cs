@@ -15,6 +15,10 @@ using Microsoft.AspNetCore.Identity;
 using FirstDemo6Domain;
 using FirstDemo6WebCore.Helper;
 using Microsoft.Extensions.Configuration;
+using FirstDemo6WebCore.Middlewares;
+using Hangfire.MySql;
+using Hangfire;
+using FirstDemo6Application.Hangfires;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -200,6 +204,32 @@ builder.Services.AddControllers(options =>
 });
 #endregion
 
+#region 添加Hangfire服务
+builder.Services.AddHangfire(config =>
+{
+    config.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+          .UseSimpleAssemblyNameTypeSerializer()
+          .UseRecommendedSerializerSettings()
+          .UseStorage(new MySqlStorage(
+                builder.Configuration.GetConnectionString("DefaultConnection"),
+                new MySqlStorageOptions
+                {
+                    TransactionIsolationLevel = System.Transactions.IsolationLevel.ReadCommitted,
+                    QueuePollInterval = TimeSpan.FromSeconds(15),
+                    JobExpirationCheckInterval = TimeSpan.FromHours(1),
+                    CountersAggregateInterval = TimeSpan.FromMinutes(5),
+                    PrepareSchemaIfNecessary = true,
+                    DashboardJobListLimit = 50000,
+                    TransactionTimeout = TimeSpan.FromMinutes(1)
+                }));
+});
+
+// 添加 Hangfire 服务器
+builder.Services.AddHangfireServer();
+
+// 注册 HangfireJobService
+builder.Services.AddHostedService<TeachingWorkloadStatisticsHangfireJobService>();
+#endregion
 
 var app = builder.Build();
 
@@ -233,6 +263,10 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 // 使用授权中间件
 app.UseAuthorization();
+// 使用自定义异常处理中间件
+app.UseMiddleware<BusinessExceptionMiddleWare>();
+// 启用 Hangfire 仪表盘
+app.UseHangfireDashboard();
 
 app.MapControllers();
 

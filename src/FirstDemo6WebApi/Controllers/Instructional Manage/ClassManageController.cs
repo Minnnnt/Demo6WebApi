@@ -1,7 +1,6 @@
 ﻿using FirstDemo6Application.Dtos.InputDtos;
 using FirstDemo6Common.Enums;
 using FirstDemo6WebApi.Models;
-using FirstDemo6WebCore.Exceptions;
 using FirstDemo6WebCore.Helper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -20,7 +19,7 @@ namespace FirstDemo6WebApi.Controllers.Auth
     [ApiController]
     [Route("api/[controller]")]
     [ApiExplorerSettings(IgnoreApi = false, GroupName = nameof(APIVersions.v1))]
-    public class AuthController : ControllerBase
+    public class ClassManageController : ControllerBase
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IConfiguration _configuration;
@@ -31,7 +30,7 @@ namespace FirstDemo6WebApi.Controllers.Auth
         /// </summary>
         /// <param name="userManager"></param>
         /// <param name="configuration"></param>
-        public AuthController(UserManager<IdentityUser> userManager, IConfiguration configuration, JwtHelper jwtHelper)
+        public ClassManageController(UserManager<IdentityUser> userManager, IConfiguration configuration, JwtHelper jwtHelper)
         {
             _userManager = userManager;
             _configuration = configuration;
@@ -92,15 +91,14 @@ namespace FirstDemo6WebApi.Controllers.Auth
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LofinInputDto model)
         {
-            throw new BusinessFriendException(ExceptionEnums.BusinessErrorCode.Param_Is_Null, "用户名不可为空");
-            //var user = await _userManager.FindByNameAsync(model.Username);
-            //if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
-            //{
-            //    string tokenString = _jwtHelper.CreateToken(model.Username, null);
+            var user = await _userManager.FindByNameAsync(model.Username);
+            if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
+            {
+                string tokenString = _jwtHelper.CreateToken(model.Username, null);
 
-            //    return Ok(new { Token = tokenString });
-            //}
-            //return Unauthorized();
+                return Ok(new { Token = tokenString });
+            }
+            return Unauthorized();
         }
     }
 }

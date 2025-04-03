@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FirstDemo6Domain.Entities
+namespace FirstDemo6Domain.Entities.Manager
 {
-    public class User : IdentityUser
+    public class Role : IdentityRole
     {
     }
 }
