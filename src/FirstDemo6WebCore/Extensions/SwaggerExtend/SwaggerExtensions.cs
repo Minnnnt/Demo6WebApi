@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FirstDemo6WebCore.SwaggerExtend
+namespace FirstDemo6WebCore.Extensions.SwaggerExtend
 {
     /// <summary>
     /// swagger 封装扩展

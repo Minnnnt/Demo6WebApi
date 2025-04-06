@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\FirstDemo6DependencyPackage\FirstDemo6DependencyPackage.csproj" />
+  </ItemGroup>
+
 </Project>

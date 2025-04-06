@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FirstDemo6WebCore.CorsExtend
+namespace FirstDemo6WebCore.Extensions.CorsExtend
 {
     /// <summary>
     /// 

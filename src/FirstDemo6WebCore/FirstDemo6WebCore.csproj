@@ -7,6 +7,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Extensions\RabbiteMQExtend\**" />
+	  <EmbeddedResource Remove="Extensions\RabbiteMQExtend\**" />
+	  <None Remove="Extensions\RabbiteMQExtend\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<ProjectReference Include="..\FirstDemo6Common\FirstDemo6Common.csproj" />
 		<ProjectReference Include="..\FirstDemo6DependencyPackage\FirstDemo6DependencyPackage.csproj" />
 		<ProjectReference Include="..\FirstDemo6Models\FirstDemo6Models.csproj" />

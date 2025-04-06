@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FirstDemo6Models.Bos.MediatRBos
+namespace FirstDemo6Models.Bos.CapBos
 {
-    internal class Class1
+    public class CapSetting
     {
+        
     }
 }

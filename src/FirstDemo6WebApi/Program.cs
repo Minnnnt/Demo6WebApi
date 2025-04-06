@@ -1,5 +1,3 @@
-using FirstDemo6WebCore.SwaggerExtend;
-using FirstDemo6WebCore.CorsExtend;
 using Microsoft.EntityFrameworkCore;
 using FirstDemo6WebCore.Filters;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -15,6 +13,12 @@ using System.Reflection;
 using FirstDemo6WebCore.Hangfires;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection.Emit;
+using FirstDemo6WebCore.Extensions.CorsExtend;
+using FirstDemo6WebCore.Extensions.SwaggerExtend;
+using FirstDemo6WebCore.Extensions.CapExtend;
+using FirstDemo6Application.Services.BusinessServices;
+using FirstDemo6Application.Services.Impls.BusinessServices;
+using FirstDemo6Application.Handlers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,8 +58,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(option =>
 //                   .AllowAnyMethod();
 //    });
 //});
-#endregion
 builder.Services.AddCorsExt();
+#endregion
 
 #region Swagger
 //builder.Services.AddEndpointsApiExplorer();
@@ -113,8 +117,8 @@ builder.Services.AddCorsExt();
 //                });
 //    #endregion
 //});
-#endregion
 builder.Services.AddSwaggerExt();
+#endregion
 
 #region 注册 Identity 服务
 // 注册 Identity 服务
@@ -238,13 +242,19 @@ var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 builder.Services.AddMediatR(cfg=>cfg.RegisterServicesFromAssemblies(assemblies));
 #endregion
 
+#region 添加cap服务
+builder.Services.AddMCodeCap(builder.Configuration);
+#endregion
+
+builder.Services.AddTransient<INotificationService, NotificationService>();
+builder.Services.AddTransient<AcademicAffairsNoticeHandler>();
 
 var app = builder.Build();
 
 //app.UseCors("allCors");
 app.UserCorsExt();
 
-// Configure the HTTP request pipeline.
+// Configure the HTTP request pipeline.，只有开发环境可用swagger
 if (app.Environment.IsDevelopment())
 {
     #region 使用swagger
@@ -262,8 +272,8 @@ if (app.Environment.IsDevelopment())
     //    }
     //    options.RoutePrefix = $"{swaggerBasePath}"; 
     //});
-    #endregion
     app.UseSwaggerExt();
+    #endregion
 }
 app.UseRouting();
 app.UseHttpsRedirection();

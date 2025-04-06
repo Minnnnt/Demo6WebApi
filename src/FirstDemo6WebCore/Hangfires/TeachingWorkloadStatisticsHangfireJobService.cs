@@ -8,8 +8,15 @@ using System.Threading.Tasks;
 
 namespace FirstDemo6WebCore.Hangfires
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class TeachingWorkloadStatisticsHangfireJobService : IHostedService
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public Task StartAsync(CancellationToken cancellationToken)
         {
             // 一次性任务
@@ -23,6 +30,10 @@ namespace FirstDemo6WebCore.Hangfires
             return Task.CompletedTask;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public Task StopAsync(CancellationToken cancellationToken)
         {
             return Task.CompletedTask;
