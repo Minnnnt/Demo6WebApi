@@ -19,6 +19,9 @@ using FirstDemo6WebCore.Extensions.CapExtend;
 using FirstDemo6Application.Services.BusinessServices;
 using FirstDemo6Application.Services.Impls.BusinessServices;
 using FirstDemo6Application.Handlers;
+using FirstDemo6WebCore.Extensions.ServiceDIExtend;
+using FirstDemo6Domain.DomainServices;
+using FirstDemo6Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -246,8 +249,10 @@ builder.Services.AddMediatR(cfg=>cfg.RegisterServicesFromAssemblies(assemblies))
 builder.Services.AddMCodeCap(builder.Configuration);
 #endregion
 
-builder.Services.AddTransient<INotificationService, NotificationService>();
+//builder.Services.AddTransient<INotificationService, NotificationService>();
 builder.Services.AddTransient<AcademicAffairsNoticeHandler>();
+builder.Services.AddServiceDI(typeof(IApplicationService));
+//builder.Services.AddServiceDI(typeof(IDomainService));
 
 var app = builder.Build();
 

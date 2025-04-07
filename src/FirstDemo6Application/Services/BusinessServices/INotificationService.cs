@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FirstDemo6Application.Services.BusinessServices
 {
-    public interface INotificationService
+    public interface INotificationService: IApplicationService
     {
         /// <summary>
         /// 教务通知
