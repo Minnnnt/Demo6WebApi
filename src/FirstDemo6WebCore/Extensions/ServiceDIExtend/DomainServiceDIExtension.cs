@@ -12,7 +12,7 @@ namespace FirstDemo6WebCore.Extensions.ServiceDIExtend
     /// <summary>
     /// 
     /// </summary>
-    public static class DomainServiceDIExtend
+    public static class DomainServiceDIExtension
     {
         /// <summary>
         /// 

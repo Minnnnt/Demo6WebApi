@@ -14,13 +14,14 @@ using DotNetCore.CAP;
 using FirstDemo6Models.Bos.RabbitMQBos;
 using DotNetCore.CAP.Messages;
 using FirstDemo6WebCore.Extensions.UtilsExtends;
+using FirstDemo6WebCore.Extensions.LoggerWraper;
 
 namespace FirstDemo6WebCore.Extensions.CapExtend
 {
     /// <summary>
     /// 
     /// </summary>
-    public static class CapExtend
+    public static class CapExtension
     {
         /// <summary>
         /// 
@@ -28,8 +29,8 @@ namespace FirstDemo6WebCore.Extensions.CapExtend
         public static IServiceCollection AddMCodeCap(this IServiceCollection services, IConfiguration configuration)
         {
             // 读取配置文件的配置项
-            var rabbitMQOptions = new RabbitMQSetting();
-            configuration.GetSection("RabbitMQSetting").Bind(rabbitMQOptions);
+            var rabbitMQOptions = new RabbitMQSettings();
+            configuration.GetSection("RabbitMQSettings").Bind(rabbitMQOptions);
 
             if (rabbitMQOptions == null)
             {
@@ -68,7 +69,7 @@ namespace FirstDemo6WebCore.Extensions.CapExtend
                 x.FailedThresholdCallback = (e) =>
                 {
                     var serviceProvider = services.BuildServiceProvider();
-                    var loggerWrapper = serviceProvider.GetRequiredService<CapExtendLoggerWrapper>();
+                    var loggerWrapper = serviceProvider.GetRequiredService<ExtendLoggerWrapper>();
                     if (e.MessageType == MessageType.Publish)
                     {
                         loggerWrapper.LogError("Cap发送消息失败;" + JsonExtension.Serialize(e.Message));
@@ -83,23 +84,5 @@ namespace FirstDemo6WebCore.Extensions.CapExtend
 
             return services;
         }
-    }
-
-    // 非静态类用于日志记录
-    public class CapExtendLoggerWrapper
-    {
-        private readonly ILogger<CapExtendLoggerWrapper> _logger;
-
-        public CapExtendLoggerWrapper(ILogger<CapExtendLoggerWrapper> logger)
-        {
-            _logger = logger;
-        }
-
-        public void LogError(string message)
-        {
-            _logger?.LogError(message);
-        }
-    }
-
-    
+    }     
 }

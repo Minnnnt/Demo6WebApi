@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FirstDemo6Models.Bos.RabbitMQBos
 {
-    public class RabbitMQSetting : RabbitMQOptions
+    public class RabbitMQSettings : RabbitMQOptions
     {
 
     }

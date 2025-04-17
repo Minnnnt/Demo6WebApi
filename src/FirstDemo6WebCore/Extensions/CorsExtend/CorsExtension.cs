@@ -11,7 +11,7 @@ namespace FirstDemo6WebCore.Extensions.CorsExtend
     /// <summary>
     /// 
     /// </summary>
-    public static class CorsExtensions
+    public static class CorsExtension
     {
         /// <summary>
         /// 

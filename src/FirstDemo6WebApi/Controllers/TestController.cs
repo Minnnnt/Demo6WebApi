@@ -1,12 +1,18 @@
 using FirstDemo6Application.Dtos.InputDtos;
 using FirstDemo6Application.Services.BusinessServices;
+using FirstDemo6Application.Services.Redis;
 using FirstDemo6Common.Enums;
 using FirstDemo6Models.Bos.MediatRBos;
 using FirstDemo6WebCore.MediatRs.Commands;
 using FirstDemo6WebCore.MediatRs.Events;
 using FirstDemo6WebCore.MediatRs.Requests;
+using Google.Protobuf.WellKnownTypes;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using StackExchange.Redis;
+using System.Collections.Generic;
+using System.Diagnostics.Metrics;
+using System.Linq;
 
 namespace FirstDemo6WebApi.Controllers
 {
@@ -25,15 +31,17 @@ namespace FirstDemo6WebApi.Controllers
         public readonly ILogger<TestController> _Logger;
         private readonly IMediator _mediator;
         private readonly INotificationService _notificationService;
+        private readonly IRedisService _redis;
 
         /// <summary>
         /// 构造注入
         /// </summary>
-        public TestController(ILogger<TestController> logger, IMediator mediator, INotificationService notificationService)
+        public TestController(ILogger<TestController> logger, IMediator mediator, INotificationService notificationService, IRedisService redis)
         {
             _Logger = logger;
             _mediator = mediator;
             _notificationService = notificationService;
+            _redis = redis;
         }
 
         #region MediatR适用测试demo
@@ -67,7 +75,7 @@ namespace FirstDemo6WebApi.Controllers
         }
         #endregion
 
-        #region swageer测试及日志记录测试
+        #region swagger测试及日志记录测试
         /// <summary>
         /// 测试swagger注释显示get
         /// </summary>
@@ -119,7 +127,36 @@ namespace FirstDemo6WebApi.Controllers
             });
             return Ok();
         }
-        
+
+        #endregion
+
+        #region Redis测试
+        [HttpGet("redis/query")]
+        public IActionResult QueryRedis()
+        {
+            _redis.SetRedisString();
+            _redis.SetRedisHash();
+            _redis.SetRedisListLeft();
+            _redis.SetRedisListString();
+            _redis.SetRedisSorted();
+            var stringValue= _redis.GetRedisString();
+            var fieldValue = _redis.GetRedisHash();
+            var fieldValues = _redis.GetRedisHashs();
+            var listValues = _redis.GetRedisListLeft();
+            var listStringValues = _redis.GetRedisListString();
+            var sortedValue = _redis.GetRedisSorted();
+            
+            List<string> result = new List<string>
+            {
+                $"查询到的字符串值为: {stringValue}",
+                $"哈希字段 field1 的值为: {fieldValue}",
+                $"哈希字段: {string.Join(",", fieldValues.Select(x => x.Name))}, 值: {string.Join(",", fieldValues.Select(x => x.Value))}",
+                $"列表元素: {string.Join(",", listValues)}",
+                $"集合元素: {string.Join(",", listStringValues)}",
+                $"有序集合元素: {string.Join(",", sortedValue)}"
+            };
+            return Ok(result);
+        }
         #endregion
     }
 }

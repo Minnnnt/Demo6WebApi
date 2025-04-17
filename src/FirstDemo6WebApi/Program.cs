@@ -22,6 +22,8 @@ using FirstDemo6Application.Handlers;
 using FirstDemo6WebCore.Extensions.ServiceDIExtend;
 using FirstDemo6Domain.DomainServices;
 using FirstDemo6Application.Services;
+using FirstDemo6WebCore.Extensions.RedisExtend;
+using FirstDemo6WebCore.Extensions.LoggerWraper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -245,8 +247,14 @@ var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 builder.Services.AddMediatR(cfg=>cfg.RegisterServicesFromAssemblies(assemblies));
 #endregion
 
+builder.Services.AddTransient<ExtendLoggerWrapper>();
+
 #region 添加cap服务
 builder.Services.AddMCodeCap(builder.Configuration);
+#endregion
+
+#region 添加redis服务
+builder.Services.AddRedisExt(builder.Configuration);
 #endregion
 
 //builder.Services.AddTransient<INotificationService, NotificationService>();

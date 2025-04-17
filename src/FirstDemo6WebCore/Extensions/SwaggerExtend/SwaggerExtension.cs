@@ -13,7 +13,7 @@ namespace FirstDemo6WebCore.Extensions.SwaggerExtend
     /// <summary>
     /// swagger 封装扩展
     /// </summary>
-    public static class SwaggerExtensions
+    public static class SwaggerExtension
     {
         /// <summary>
         /// 配置swagger
